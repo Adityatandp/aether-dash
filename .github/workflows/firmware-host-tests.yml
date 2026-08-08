@@ -1,0 +1,22 @@
+name: firmware-host-tests
+
+on:
+  push:
+    paths:
+      - "aether-firmware/**"
+      - ".github/workflows/firmware-host-tests.yml"
+  pull_request:
+    paths:
+      - "aether-firmware/**"
+      - ".github/workflows/firmware-host-tests.yml"
+
+jobs:
+  protocol-host:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build & run protocol host tests
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          make -C aether-firmware/tests/host test

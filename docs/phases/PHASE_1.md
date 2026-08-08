@@ -7,6 +7,22 @@ Prove the product core on breadboard:
 3. Web Serial streaming at ≥10 Hz from browser PWA
 4. Power budget measurement path established
 
+## Implementation status (in repo)
+
+| Item | Status |
+|---|---|
+| Protocol v1 parser (metrics/hello/ping/config) | Done + host tests |
+| USB-Serial-JTAG Web Serial transport | Done (needs on-device verify) |
+| ST7796 + esp_lvgl_port display path | Done (needs on-device verify) |
+| AI/Dev dual-gauge LVGL UI | Done (needs on-device verify) |
+| EC11 brightness + demo toggle | Done (needs on-device verify) |
+| Demo metrics without host | Done |
+| Web app connect + 10 Hz simulator stream | Done |
+| Web app reconnect/disconnect UX | Done |
+| On-device 30 min soak + power log | **Pending hardware** |
+
+Bring-up guide: [`aether-firmware/docs/PHASE1_BRINGUP.md`](../../aether-firmware/docs/PHASE1_BRINGUP.md)
+
 ## Hardware (bench)
 - ESP32-S3-DevKitC-1 (prefer N16R8 for PSRAM)
 - 3.5" IPS 480×320 SPI (ST7796 or ILI9488 — document exact module)
@@ -16,18 +32,18 @@ Prove the product core on breadboard:
 - USB power meter (for <2.5 W target)
 
 ## Firmware milestones
-| Week | Milestone |
-|---|---|
-| 1 | Display bring-up + LVGL hello + dark theme shell |
-| 2 | Protocol parser + metric store + dual gauges updating |
-| 3 | Encoder actions + stability soak + power notes |
+| Week | Milestone | Status |
+|---|---|---|
+| 1 | Display bring-up + LVGL hello + dark theme shell | Code complete |
+| 2 | Protocol parser + metric store + dual gauges updating | Code complete |
+| 3 | Encoder actions + stability soak + power notes | Code complete; soak/power pending HW |
 
 ## Web app milestones
-| Week | Milestone |
-|---|---|
-| 1 | Connect page + Web Serial permission flow |
-| 2 | Encode Protocol v1 metric frames + live preview |
-| 3 | Simulated metric provider + reconnect UX |
+| Week | Milestone | Status |
+|---|---|---|
+| 1 | Connect page + Web Serial permission flow | Done |
+| 2 | Encode Protocol v1 metric frames + live preview | Done |
+| 3 | Simulated metric provider + reconnect UX | Done |
 
 ## Metric source (Phase 1 pragmatic choice)
 Start with a **simulated provider** in the web app, then add one real source:
@@ -54,7 +70,7 @@ Start with a **simulated provider** in the web app, then add one real source:
 ## Risks & mitigations
 | Risk | Mitigation |
 |---|---|
-| Panel driver mismatch | Keep ST7796 + ILI9488 stubs; lock BOM early |
+| Panel driver mismatch | Keep ST7796 path first; add ILI9488 if BOM differs |
 | LVGL frame drops at 10 Hz | Partial buffers + PSRAM; profile CPU |
 | Web Serial flaky on some OS | Document Chrome/Edge only for POC |
-| Pin conflicts with USB JTAG | Prefer USB-UART or explicit CDC config |
+| Pin conflicts with USB JTAG | Use USB-Serial-JTAG intentionally for DevKit POC |

@@ -19,9 +19,15 @@ function App() {
   const [metrics, setMetrics] = useState<MetricsPayload>({})
   const [hz, setHz] = useState(0)
   const [board, setBoard] = useState<DetectedBoard | null>(null)
+  const [lastEvent, setLastEvent] = useState<string>('')
 
   const transportRef = useRef<WebSerialTransport | null>(null)
   const simTimer = useRef<number | null>(null)
+  const modeRef = useRef<AppMode>('idle')
+
+  useEffect(() => {
+    modeRef.current = mode
+  }, [mode])
 
   useEffect(() => {
     return metricsStore.subscribe((m, measuredHz) => {
@@ -39,17 +45,47 @@ function App() {
 
   const statusLabel = useMemo(() => {
     if (mode === 'simulator') return 'Simulator streaming @ ~10 Hz'
+    if (lastEvent) return `${status} · ${lastEvent}`
     return status
-  }, [mode, status])
+  }, [mode, status, lastEvent])
+
+  function stopStreamTimer() {
+    if (simTimer.current) {
+      window.clearInterval(simTimer.current)
+      simTimer.current = null
+    }
+  }
+
+  function startDeviceStream(transport: WebSerialTransport) {
+    stopStreamTimer()
+    simTimer.current = window.setInterval(() => {
+      if (modeRef.current !== 'device') return
+      const sample = createSimulatedMetrics(Date.now())
+      metricsStore.update(sample)
+      void transport.send(encodeMetrics(sample)).catch((err: unknown) => {
+        setError(err instanceof Error ? err.message : String(err))
+      })
+    }, 100)
+  }
 
   async function connectSerial() {
     setError(undefined)
+    setLastEvent('')
     const transport = new WebSerialTransport()
     transportRef.current = transport
 
     transport.onStatus((s: TransportStatus, detail?: string) => {
       setStatus(detail ? `${s}: ${detail}` : s)
-      if (s === 'error') setError(detail)
+      if (s === 'error') {
+        setError(detail)
+        stopStreamTimer()
+        setMode('idle')
+      }
+      if (s === 'disconnected' && modeRef.current === 'device') {
+        stopStreamTimer()
+        setMode('idle')
+        setStatus('Disconnected — reconnect when ready')
+      }
     })
 
     transport.onLine((line) => {
@@ -58,20 +94,21 @@ function App() {
       if (msg.type === 'hello') {
         const hello = msg.payload as HelloPayload
         setBoard(boardFromHello(hello))
+        setLastEvent(`hello from ${hello.board_id}`)
         void transport.send(encodeHelloAck(10))
+      } else if (msg.type === 'event') {
+        const payload = msg.payload as { name?: string; delta?: number }
+        setLastEvent(`${payload.name ?? 'event'}${payload.delta != null ? ` ${payload.delta}` : ''}`)
+      } else if (msg.type === 'pong') {
+        setLastEvent('pong')
       }
     })
 
     try {
       await transport.connect()
       setMode('device')
-      // Until host metric collectors exist, stream simulator frames to the device.
-      if (simTimer.current) window.clearInterval(simTimer.current)
-      simTimer.current = window.setInterval(() => {
-        const sample = createSimulatedMetrics(Date.now())
-        metricsStore.update(sample)
-        void transport.send(encodeMetrics(sample))
-      }, 100)
+      // Device also emits hello on boot; ask again in case we connected mid-session.
+      startDeviceStream(transport)
     } catch (err) {
       setMode('idle')
       setError(err instanceof Error ? err.message : String(err))
@@ -80,6 +117,7 @@ function App() {
 
   function startSimulator() {
     setError(undefined)
+    setLastEvent('simulator')
     setBoard({
       boardId: 'sim-host',
       layoutClass: 'M',
@@ -89,23 +127,21 @@ function App() {
     })
     setMode('simulator')
     setStatus('simulator')
-    if (simTimer.current) window.clearInterval(simTimer.current)
+    stopStreamTimer()
     simTimer.current = window.setInterval(() => {
       metricsStore.update(createSimulatedMetrics(Date.now()))
     }, 100)
   }
 
   async function disconnect() {
-    if (simTimer.current) {
-      window.clearInterval(simTimer.current)
-      simTimer.current = null
-    }
+    stopStreamTimer()
     await transportRef.current?.disconnect()
     transportRef.current = null
     setMode('idle')
     setBoard(null)
     setStatus('Ready')
     setHz(0)
+    setLastEvent('')
   }
 
   return (

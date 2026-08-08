@@ -1,0 +1,12 @@
+idf_component_register(
+  SRCS
+    "screens/ai_dev/ai_dev_screen.c"
+    "themes/dark/theme_dark.c"
+  INCLUDE_DIRS
+    "include"
+  REQUIRES
+    aether_hal
+    aether_protocol
+    aether_display
+    lvgl
+)

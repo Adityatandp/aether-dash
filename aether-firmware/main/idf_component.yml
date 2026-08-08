@@ -1,0 +1,11 @@
+## ESP Component Registry dependencies for Phase 1 dash-s35
+dependencies:
+  idf:
+    version: ">=5.2.0"
+  lvgl/lvgl:
+    version: "^9.2.0"
+    public: true
+  espressif/esp_lvgl_port:
+    version: "^2.6.0"
+  espressif/esp_lcd_st7796:
+    version: "^1.3.0"

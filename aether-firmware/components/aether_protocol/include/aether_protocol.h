@@ -27,6 +27,7 @@ typedef struct {
   uint8_t has_tokens : 1;
   uint8_t has_watts : 1;
   uint8_t has_gpu_temp : 1;
+  uint8_t has_label : 1;
 } aether_metrics_t;
 
 typedef enum {
@@ -41,12 +42,16 @@ typedef struct {
   aether_msg_type_t type;
   int64_t ts;
   aether_metrics_t metrics;
-  uint8_t brightness; /* for config_set, 0=unset */
+  uint8_t brightness; /* 1-255 when set via config_set; 0 = unset */
+  uint8_t has_brightness;
+  char theme[24];
+  char mode[24];
 } aether_host_msg_t;
 
 esp_err_t aether_protocol_parse_line(const char *line, aether_host_msg_t *out);
 size_t aether_protocol_format_hello(char *buf, size_t buflen);
 size_t aether_protocol_format_pong(char *buf, size_t buflen, int64_t ts);
+size_t aether_protocol_format_event(char *buf, size_t buflen, const char *name, int delta);
 
 #ifdef __cplusplus
 }

@@ -61,15 +61,18 @@ Canonical wire format: **Aether Protocol v1** (NDJSON over serial)
 
 ## Development status
 
-**Phase 0 — Scaffold complete.** Next: Phase 1 breadboard POC.
+**Phase 1 — firmware/UI/transport implemented in repo.**  
+On-device soak + power measurement still need physical hardware.
 
 ```text
 [x] Phase 0  Scaffold & contracts
-[ ] Phase 1  Bench POC (Web Serial + LVGL)
+[~] Phase 1  Bench POC (code ready; hardware validation pending)
 [ ] Phase 2  PCB + enclosure
 [ ] Phase 3  Alpha (20 units)
 [ ] Phase 4  Preorder-gated D2C launch
 ```
+
+Phase 1 bring-up: [`aether-firmware/docs/PHASE1_BRINGUP.md`](aether-firmware/docs/PHASE1_BRINGUP.md)
 
 ## License
 
