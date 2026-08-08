@@ -1,0 +1,22 @@
+{
+  "id": "dash-mini28",
+  "name": "Aether Dash Mini 2.8",
+  "mcu": "esp32s3",
+  "status": "planned",
+  "display": {
+    "driver": "ili9341",
+    "width": 320,
+    "height": 240,
+    "rotation": 0,
+    "bus": "spi",
+    "layout_class": "S",
+    "color_depth": 16
+  },
+  "inputs": ["ec11"],
+  "transports": ["webserial", "wifi_mqtt"],
+  "power": {
+    "usb_c_bus_powered": true,
+    "target_max_watts": 2.0
+  },
+  "notes": "Budget SKU. Firmware profile only until post-launch."
+}

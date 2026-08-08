@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aether.dev/protocol/aether-proto-v1.schema.json",
+  "title": "Aether Protocol v1 Envelope",
+  "type": "object",
+  "required": ["v", "type", "ts", "payload"],
+  "properties": {
+    "v": { "const": 1 },
+    "type": {
+      "type": "string",
+      "enum": ["hello", "hello_ack", "metrics", "config_set", "event", "ping", "pong", "error"]
+    },
+    "ts": { "type": "integer", "minimum": 0 },
+    "payload": { "type": "object" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "type": { "const": "hello" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "required": ["board_id", "fw", "protocol", "layout_class", "caps", "display"],
+            "properties": {
+              "board_id": { "type": "string" },
+              "fw": { "type": "string" },
+              "protocol": { "type": "string" },
+              "layout_class": { "type": "string", "enum": ["S", "M", "L"] },
+              "caps": {
+                "type": "object",
+                "properties": {
+                  "webserial": { "type": "boolean" },
+                  "webusb": { "type": "boolean" },
+                  "wifi_mqtt": { "type": "boolean" },
+                  "encoder": { "type": "boolean" },
+                  "touch": { "type": "boolean" }
+                }
+              },
+              "display": {
+                "type": "object",
+                "required": ["w", "h"],
+                "properties": {
+                  "w": { "type": "integer", "minimum": 1 },
+                  "h": { "type": "integer", "minimum": 1 },
+                  "rotation": { "type": "integer" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "type": { "const": "metrics" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "cpu_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+              "ram_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+              "gpu_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+              "vram_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+              "tokens_per_s": { "type": "number", "minimum": 0 },
+              "pkg_watts": { "type": "number", "minimum": 0 },
+              "gpu_temp_c": { "type": "number" },
+              "label": { "type": "string", "maxLength": 64 }
+            },
+            "additionalProperties": true
+          }
+        }
+      }
+    }
+  ]
+}

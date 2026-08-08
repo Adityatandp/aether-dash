@@ -1,0 +1,18 @@
+Item,Qty,Manufacturer/MPN or generic,Notes,Est_INR_each
+ESP32-S3 module,1,ESP32-S3-WROOM-1 N16R8,Prefer PSRAM for LVGL,350
+3.5in IPS TFT 480x320 SPI,1,ST7796 or ILI9488 module,Confirm controller before PCB FPC,650
+USB-C receptacle,1,16-pin USB-C,With CC resistors on PCB,25
+ESD diode array,1,USBLC6-2 or equiv,D+/D- protection,15
+LDO 3.3V,1,AMS1117-3.3 or better LDO,Size for panel backlight,20
+EC11 encoder,1,EC11 with switch,Panel mount,40
+Encoder knob,1,Aluminum/plastic 6mm,UI affordance,20
+0.1uF capacitors,20,0603,Decoupling,2
+10uF capacitors,6,0805,Bulk,3
+Resistors assorted,30,0603,CC/pullups/LED,1
+LED status,1,0805,Boot/status,2
+Push buttons,2,SMD tact,BOOT/RESET,5
+PCB 2-layer,1,JLCPCB,revA prototype,150
+FFC/FPC connector,1,Matches panel,Lock before fab,30
+Standoffs/screws,4,M2/M2.5,Enclosure,10
+3D printed enclosure,1,PLA/PETG,Angled stand,200
+Packaging draft,1,Box+card,Alpha only,40

@@ -1,0 +1,22 @@
+{
+  "id": "dash-m40",
+  "name": "Aether Dash M40",
+  "mcu": "esp32s3",
+  "status": "planned",
+  "display": {
+    "driver": "st7701",
+    "width": 480,
+    "height": 480,
+    "rotation": 0,
+    "bus": "rgb_or_spi",
+    "layout_class": "M",
+    "color_depth": 16
+  },
+  "inputs": ["ec11", "touch"],
+  "transports": ["webserial", "webusb", "wifi_mqtt"],
+  "power": {
+    "usb_c_bus_powered": true,
+    "target_max_watts": 2.5
+  },
+  "notes": "Premium square desk SKU. Validate panel bus before PCB."
+}

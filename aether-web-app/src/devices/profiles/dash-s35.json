@@ -1,0 +1,12 @@
+{
+  "id": "dash-s35",
+  "layout_class": "M",
+  "display": { "w": 480, "h": 320 },
+  "caps": {
+    "webserial": true,
+    "webusb": false,
+    "wifi_mqtt": false,
+    "encoder": true,
+    "touch": false
+  }
+}

@@ -1,0 +1,4 @@
+/* Global resets live here; theme tokens primarily in App.css */
+#root {
+  min-height: 100vh;
+}

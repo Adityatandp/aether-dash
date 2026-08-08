@@ -1,0 +1,12 @@
+CERN Open Hardware Licence Version 2 - Permissive
+
+Copyright 2026 Aether Dash Contributors
+
+This hardware design documentation is licensed under CERN-OHL-P v2.
+
+You may redistribute and modify these hardware design files under the terms
+of the CERN-OHL-P. A copy of the license text should accompany releases:
+https://ohwr.org/cern_ohl_p_v2.txt
+
+Until full schematic/PCB datasets are published, treat this LICENSE as the
+intent for all files under `aether-hardware/`.

@@ -1,0 +1,28 @@
+name: web-ci
+
+on:
+  push:
+    paths:
+      - "aether-web-app/**"
+      - ".github/workflows/web-ci.yml"
+  pull_request:
+    paths:
+      - "aether-web-app/**"
+      - ".github/workflows/web-ci.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: aether-web-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: aether-web-app/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build

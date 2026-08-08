@@ -1,0 +1,1 @@
+export { AETHER_PROTOCOL_MAJOR, AETHER_PROTOCOL_VERSION } from './types'

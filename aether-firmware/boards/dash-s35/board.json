@@ -1,0 +1,22 @@
+{
+  "id": "dash-s35",
+  "name": "Aether Dash S35",
+  "mcu": "esp32s3",
+  "status": "active",
+  "display": {
+    "driver": "st7796",
+    "width": 480,
+    "height": 320,
+    "rotation": 90,
+    "bus": "spi",
+    "layout_class": "M",
+    "color_depth": 16
+  },
+  "inputs": ["ec11"],
+  "transports": ["webserial", "webusb", "wifi_mqtt"],
+  "power": {
+    "usb_c_bus_powered": true,
+    "target_max_watts": 2.5
+  },
+  "notes": "Phase 1 launch SKU. Pin map is breadboard-draft; update after wiring."
+}

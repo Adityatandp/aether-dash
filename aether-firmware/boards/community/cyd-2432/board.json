@@ -1,0 +1,22 @@
+{
+  "id": "cyd-2432",
+  "name": "Community CYD 2.8 (ESP32-2432S028)",
+  "mcu": "esp32",
+  "status": "community",
+  "display": {
+    "driver": "ili9341",
+    "width": 320,
+    "height": 240,
+    "rotation": 0,
+    "bus": "spi",
+    "layout_class": "S",
+    "color_depth": 16
+  },
+  "inputs": ["touch"],
+  "transports": ["webserial", "wifi_mqtt"],
+  "power": {
+    "usb_c_bus_powered": true,
+    "target_max_watts": 2.0
+  },
+  "notes": "DIY-friendly community target for firmware validation on cheap hardware."
+}

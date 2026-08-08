@@ -1,0 +1,46 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node / web
+node_modules/
+dist/
+build/
+.vite/
+*.local
+.env
+.env.*
+!.env.example
+coverage/
+*.tsbuildinfo
+
+# ESP-IDF / firmware
+aether-firmware/build/
+aether-firmware/sdkconfig
+aether-firmware/sdkconfig.old
+aether-firmware/dependencies.lock
+aether-firmware/managed_components/
+**/compile_commands.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Hardware exports / CAD caches
+*.kicad_prl
+*-backups/
+_autosave*
+~*
+*.FCBak
+*.tmp
+
+# Logs / artifacts
+*.log
+/tmp/
+.cursor/

@@ -1,0 +1,22 @@
+{
+  "id": "lilygo-tdisplay-s3",
+  "name": "Community LilyGO T-Display-S3",
+  "mcu": "esp32s3",
+  "status": "community",
+  "display": {
+    "driver": "st7789",
+    "width": 320,
+    "height": 170,
+    "rotation": 90,
+    "bus": "spi",
+    "layout_class": "S",
+    "color_depth": 16
+  },
+  "inputs": ["buttons"],
+  "transports": ["webserial", "wifi_mqtt"],
+  "power": {
+    "usb_c_bus_powered": true,
+    "target_max_watts": 2.0
+  },
+  "notes": "Useful for early UI layout_S experiments."
+}
