@@ -8,6 +8,7 @@ GitHub: `Adityatandp/aether-dash`
 aether-dash/
 ├── aether-firmware/     # future: aether-firmware
 ├── aether-web-app/      # future: aether-web-app
+├── aether-host/         # future: aether-host (real PC metrics agent)
 ├── aether-hardware/     # future: aether-hardware
 └── docs/                # product + phase plans (canonical during incubation)
 ```
