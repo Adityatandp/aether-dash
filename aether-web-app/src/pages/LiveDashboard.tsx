@@ -5,26 +5,36 @@ interface Props {
   metrics: MetricsPayload
   hz: number
   board?: DetectedBoard | null
-  mode: 'device' | 'simulator'
+  mode: 'device' | 'simulator' | 'real'
   onDisconnect: () => void
 }
 
 function Gauge({ label, value, unit = '%' }: { label: string; value?: number; unit?: string }) {
   const v = value ?? 0
+  const missing = value == null || !Number.isFinite(value)
   return (
     <div className="gauge">
       <div className="gauge-head">
         <span>{label}</span>
         <strong>
-          {Number.isFinite(v) ? v.toFixed(1) : '—'}
-          {unit}
+          {missing ? '—' : v.toFixed(1)}
+          {missing ? '' : unit}
         </strong>
       </div>
       <div className="gauge-bar">
-        <div className="gauge-fill" style={{ width: `${Math.max(0, Math.min(100, v))}%` }} />
+        <div
+          className="gauge-fill"
+          style={{ width: `${missing ? 0 : Math.max(0, Math.min(100, v))}%` }}
+        />
       </div>
     </div>
   )
+}
+
+function modeLabel(mode: Props['mode']) {
+  if (mode === 'simulator') return 'Simulator (dummy)'
+  if (mode === 'real') return 'Real PC metrics'
+  return 'Live device'
 }
 
 export function LiveDashboard({ metrics, hz, board, mode, onDisconnect }: Props) {
@@ -32,7 +42,7 @@ export function LiveDashboard({ metrics, hz, board, mode, onDisconnect }: Props)
     <section className="panel wide">
       <div className="row">
         <div>
-          <p className="eyebrow">{mode === 'simulator' ? 'Simulator' : 'Live device'}</p>
+          <p className="eyebrow">{modeLabel(mode)}</p>
           <h1>AI / Developer Mode</h1>
           <p className="lede">
             {board

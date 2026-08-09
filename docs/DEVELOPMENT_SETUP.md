@@ -23,6 +23,19 @@ npm run dev
 ```
 Open `http://localhost:5173` in Chrome/Edge.
 
+## Real PC metrics (no ESP32)
+```bash
+cd aether-host
+npm install
+npm start
+```
+Then in the web app click **Use real PC metrics**.
+
+- Health: `http://127.0.0.1:8787/health`
+- Metrics: `http://127.0.0.1:8787/metrics`
+
+This uses the same Protocol v1 `metrics` payload shape as the future ESP32 path.
+
 ## Firmware
 ```bash
 # Install ESP-IDF then:

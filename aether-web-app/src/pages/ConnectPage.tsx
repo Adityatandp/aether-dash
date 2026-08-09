@@ -3,11 +3,18 @@ import { isWebSerialSupported } from '../transports/transport'
 interface Props {
   onConnectSerial: () => void
   onStartSimulator: () => void
+  onStartRealMetrics: () => void
   status: string
   error?: string
 }
 
-export function ConnectPage({ onConnectSerial, onStartSimulator, status, error }: Props) {
+export function ConnectPage({
+  onConnectSerial,
+  onStartSimulator,
+  onStartRealMetrics,
+  status,
+  error,
+}: Props) {
   const serialOk = isWebSerialSupported()
 
   return (
@@ -22,10 +29,17 @@ export function ConnectPage({ onConnectSerial, onStartSimulator, status, error }
         <button type="button" disabled={!serialOk} onClick={onConnectSerial}>
           Connect via Web Serial
         </button>
+        <button type="button" className="secondary" onClick={onStartRealMetrics}>
+          Use real PC metrics
+        </button>
         <button type="button" className="secondary" onClick={onStartSimulator}>
-          Run simulator (no device)
+          Run simulator (dummy)
         </button>
       </div>
+
+      <p className="hint">
+        No ESP32 yet? Start <code>aether-host</code> then click <strong>Use real PC metrics</strong>.
+      </p>
 
       {!serialOk && (
         <p className="warn">

@@ -10,6 +10,7 @@ This umbrella repository currently contains three product trees:
 |---|---|---|
 | `aether-firmware/` | `aether-firmware` | ESP-IDF firmware, LVGL UI, transports |
 | `aether-web-app/` | `aether-web-app` | Web Serial / WebUSB PWA |
+| `aether-host/` | `aether-host` | Local real PC metrics agent |
 | `aether-hardware/` | `aether-hardware` | PCB, BOM, enclosure CAD |
 
 See [docs/REPOSITORY_STRATEGY.md](docs/REPOSITORY_STRATEGY.md) for split/publish guidance.
@@ -35,6 +36,13 @@ cd aether-firmware
 cd aether-web-app
 npm install
 npm run dev
+```
+
+### Real PC metrics host
+```bash
+cd aether-host
+npm install
+npm start
 ```
 
 ### Hardware

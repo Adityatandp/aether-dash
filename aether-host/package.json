@@ -1,0 +1,19 @@
+{
+  "name": "aether-host",
+  "version": "0.1.0-dev",
+  "private": true,
+  "type": "module",
+  "description": "Local real-metrics agent for Aether Dash (no ESP32 required)",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "systeminformation": "^5.27.1"
+  }
+}

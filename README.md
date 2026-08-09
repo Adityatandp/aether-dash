@@ -10,6 +10,7 @@ This umbrella repository contains the full product development workspace:
 |---|---|---|
 | [`aether-firmware/`](aether-firmware/) | ESP-IDF / C++ / LVGL v9 firmware | `aether-firmware` |
 | [`aether-web-app/`](aether-web-app/) | Web Serial / WebUSB PWA (`dash.aether.dev`) | `aether-web-app` |
+| [`aether-host/`](aether-host/) | Local real PC metrics agent (no ESP32 needed) | `aether-host` |
 | [`aether-hardware/`](aether-hardware/) | KiCad, Gerbers, BOM, enclosure CAD | `aether-hardware` |
 | [`docs/`](docs/) | Product plan, roadmap, protocol, phases | stays here (or `aether-docs`) |
 
@@ -36,20 +37,35 @@ Wider display sizes are supported architecturally through layout classes `S | M 
 - [Development setup](docs/DEVELOPMENT_SETUP.md)
 - [Phase 0](docs/phases/PHASE_0.md) → [Phase 1](docs/phases/PHASE_1.md)
 
-### 2) Web app
+### 2) Test with real PC metrics (no ESP32)
+```bash
+# terminal 1
+cd aether-host
+npm install
+npm start
+
+# terminal 2
+cd aether-web-app
+npm install
+npm run dev
+```
+Open `http://localhost:5173` → **Use real PC metrics**.
+
+### 3) Web app only (dummy simulator)
 ```bash
 cd aether-web-app
 npm install
 npm run dev
 ```
+Then click **Run simulator (dummy)**.
 
-### 3) Firmware (requires ESP-IDF v5.2+)
+### 4) Firmware (requires ESP-IDF v5.2+)
 ```bash
 cd aether-firmware
 ./scripts/build_board.sh dash-s35
 ```
 
-### 4) Hardware
+### 5) Hardware
 See [`aether-hardware/README.md`](aether-hardware/README.md) for BOM, schematic plan, and enclosure notes.
 
 ## Protocol

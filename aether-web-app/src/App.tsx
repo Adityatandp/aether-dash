@@ -6,11 +6,16 @@ import type { HelloPayload, MetricsPayload } from './protocol/types'
 import { boardFromHello, type DetectedBoard } from './devices/detectBoard'
 import { metricsStore } from './metrics/store'
 import { createSimulatedMetrics } from './metrics/providers/simulator'
+import {
+  fetchRealHostHealth,
+  fetchRealHostMetrics,
+  getRealHostBase,
+} from './metrics/providers/realHost'
 import { WebSerialTransport } from './transports/webSerial'
 import type { TransportStatus } from './transports/transport'
 import './App.css'
 
-type AppMode = 'idle' | 'device' | 'simulator'
+type AppMode = 'idle' | 'device' | 'simulator' | 'real'
 
 function App() {
   const [mode, setMode] = useState<AppMode>('idle')
@@ -22,7 +27,7 @@ function App() {
   const [lastEvent, setLastEvent] = useState<string>('')
 
   const transportRef = useRef<WebSerialTransport | null>(null)
-  const simTimer = useRef<number | null>(null)
+  const streamTimer = useRef<number | null>(null)
   const modeRef = useRef<AppMode>('idle')
 
   useEffect(() => {
@@ -38,29 +43,35 @@ function App() {
 
   useEffect(() => {
     return () => {
-      if (simTimer.current) window.clearInterval(simTimer.current)
+      if (streamTimer.current) window.clearInterval(streamTimer.current)
       void transportRef.current?.disconnect()
     }
   }, [])
 
   const statusLabel = useMemo(() => {
     if (mode === 'simulator') return 'Simulator streaming @ ~10 Hz'
+    if (mode === 'real') return `Real metrics from ${getRealHostBase()} @ ~10 Hz`
     if (lastEvent) return `${status} · ${lastEvent}`
     return status
   }, [mode, status, lastEvent])
 
   function stopStreamTimer() {
-    if (simTimer.current) {
-      window.clearInterval(simTimer.current)
-      simTimer.current = null
+    if (streamTimer.current) {
+      window.clearInterval(streamTimer.current)
+      streamTimer.current = null
     }
   }
 
   function startDeviceStream(transport: WebSerialTransport) {
     stopStreamTimer()
-    simTimer.current = window.setInterval(() => {
+    streamTimer.current = window.setInterval(() => {
       if (modeRef.current !== 'device') return
-      const sample = createSimulatedMetrics(Date.now())
+      // Prefer forwarding latest real/sim sample if present; otherwise generate sim.
+      const latest = metricsStore.get()
+      const sample =
+        latest.cpu_pct != null || latest.ram_pct != null
+          ? latest
+          : createSimulatedMetrics(Date.now())
       metricsStore.update(sample)
       void transport.send(encodeMetrics(sample)).catch((err: unknown) => {
         setError(err instanceof Error ? err.message : String(err))
@@ -107,7 +118,6 @@ function App() {
     try {
       await transport.connect()
       setMode('device')
-      // Device also emits hello on boot; ask again in case we connected mid-session.
       startDeviceStream(transport)
     } catch (err) {
       setMode('idle')
@@ -128,8 +138,46 @@ function App() {
     setMode('simulator')
     setStatus('simulator')
     stopStreamTimer()
-    simTimer.current = window.setInterval(() => {
+    streamTimer.current = window.setInterval(() => {
       metricsStore.update(createSimulatedMetrics(Date.now()))
+    }, 100)
+  }
+
+  async function startRealMetrics() {
+    setError(undefined)
+    setLastEvent('')
+    const base = getRealHostBase()
+    const healthy = await fetchRealHostHealth(base)
+    if (!healthy) {
+      setError(
+        `Cannot reach aether-host at ${base}. Run: cd aether-host && npm install && npm start`,
+      )
+      return
+    }
+
+    setBoard({
+      boardId: 'pc-host',
+      layoutClass: 'M',
+      firmware: 'aether-host',
+      width: 480,
+      height: 320,
+    })
+    setMode('real')
+    setStatus('real-host')
+    stopStreamTimer()
+
+    streamTimer.current = window.setInterval(() => {
+      if (modeRef.current !== 'real') return
+      void fetchRealHostMetrics(base)
+        .then((sample) => {
+          metricsStore.update(sample)
+        })
+        .catch((err: unknown) => {
+          setError(err instanceof Error ? err.message : String(err))
+          stopStreamTimer()
+          setMode('idle')
+          setStatus('Real metrics disconnected')
+        })
     }, 100)
   }
 
@@ -160,6 +208,7 @@ function App() {
           <ConnectPage
             onConnectSerial={() => void connectSerial()}
             onStartSimulator={startSimulator}
+            onStartRealMetrics={() => void startRealMetrics()}
             status={statusLabel}
             error={error}
           />
@@ -168,7 +217,7 @@ function App() {
             metrics={metrics}
             hz={hz}
             board={board}
-            mode={mode === 'simulator' ? 'simulator' : 'device'}
+            mode={mode === 'simulator' ? 'simulator' : mode === 'real' ? 'real' : 'device'}
             onDisconnect={() => void disconnect()}
           />
         )}
